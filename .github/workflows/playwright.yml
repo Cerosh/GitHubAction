@@ -1,11 +1,16 @@
-name: Workflow dispatch free form input example
+name: Workflow dispatch choice input example
 on:
   workflow_dispatch:
     inputs:
       environment:
-        description: "The environment to execute test"
+        description: "Select the environment to execute test"
         required: true
         default: "test"
+        type: "choice"
+        options:
+          - test
+          - sandbox
+          - uat
 jobs:
   test:
     timeout-minutes: 60
@@ -27,5 +32,5 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-      - name: Displaying the free form input
-        run: echo "The test was executed in ${{ github.event.inputs.environment }}"
+      - name: Displaying the selected option
+        run: echo " ${{ github.event.inputs.environment }} environment was selected to run the test"
