@@ -1,4 +1,4 @@
-name: Workflow dispatch choice input example
+name: Workflow dispatch URL based on choice example
 on:
   workflow_dispatch:
     inputs:
@@ -16,6 +16,19 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
+      - name: Set BASE_URL
+        shell: bash
+        run: |
+          if [ "${{ github.event.inputs.environment }}" == "uat" ]; then
+            echo "BASE_URL=${{ github.repository.variables.UAT_URL }}" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.environment }}" == "test" ]; then
+            echo "BASE_URL=${{ github.repository.variables.TEST_URL }}" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.environment }}" == "test" ]; then
+            echo "BASE_URL=${{ github.repository.variables.SANDBOX_URL }}" >> $GITHUB_ENV
+          else
+          echo "Error: Unknown environment '${{ github.event.inputs.environment }}'.'." >&2
+          exit 1
+          fi
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
@@ -33,4 +46,4 @@ jobs:
           path: playwright-report/
           retention-days: 30
       - name: Displaying the selected option
-        run: echo " ${{ github.event.inputs.environment }} environment was selected to run the test"
+        run: echo " The execution was performed on $BASE_URL"
