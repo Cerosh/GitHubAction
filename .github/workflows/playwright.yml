@@ -18,12 +18,21 @@ jobs:
     steps:
       - name: Set BASE_URL
         shell: bash
-        env:
-          BASE_URL:
-            ${{ github.event.inputs.environment == 'uat' && github.repository.variables.UAT_URL ||
-            github.event.inputs.environment == 'test' && github.repository.variables.TEST_URL ||
-            github.event.inputs.environment == 'sandbox' && github.repository.variables.SANDBOX_URL }}
         run: |
+          if [ "${{ github.event.inputs.environment }}" == "uat" ]; then
+            BASE_URL=${{ github.repository.variables.UAT_URL }}
+          elif [ "${{ github.event.inputs.environment }}" == "test" ]; then
+            BASE_URL=${{ github.repository.variables.TEST_URL }}
+          elif [ "${{ github.event.inputs.environment }}" == "sandbox" ]; then
+            BASE_URL=${{ github.repository.variables.SANDBOX_URL }}
+          else
+            echo "Error: Unknown environment '${{ github.event.inputs.environment }}'." >&2
+            exit 1
+          fi
+          echo "BASE_URL=$BASE_URL" >> $GITHUB_ENV
+          - name: Display BASE_URL
+          shell: bash
+      - run: |
           echo "The execution was performed on $BASE_URL"
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
