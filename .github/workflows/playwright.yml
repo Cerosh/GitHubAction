@@ -1,5 +1,11 @@
-name: Basic workflow dispatch example
-on: workflow_dispatch
+name: Workflow dispatch free form input example
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "The environment to execute test"
+        required: true
+        default: "test"
 jobs:
   test:
     timeout-minutes: 60
