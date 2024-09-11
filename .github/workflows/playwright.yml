@@ -16,23 +16,10 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     env:
-      test_url: ${{ github.repository.variables.UAT_URL }}
+      UAT_URL: ${{ vars.UAT_URL }}
     steps:
       - name: Set BASE_URL
-        shell: bash
-        run: |
-          if [ "${{ github.event.inputs.environment }}" == "uat" ]; then
-            BASE_URL=${{ github.repository.variables.UAT_URL }}
-          elif [ "${{ github.event.inputs.environment }}" == "test" ]; then
-            BASE_URL=${{ github.repository.variables.TEST_URL }}
-          elif [ "${{ github.event.inputs.environment }}" == "sandbox" ]; then
-            BASE_URL=${{ github.repository.variables.SANDBOX_URL }}
-          else
-            echo "Error: Unknown environment '${{ github.event.inputs.environment }}'." >&2
-            exit 1
-          fi
-          echo "BASE_URL=$BASE_URL" >> $GITHUB_ENV
-          echo "TEST_URL=$test_url" >> $GITHUB_ENV
+        run: echo "$UAT_URL""
       - name: Display BASE_URL
         shell: bash
         run: |
