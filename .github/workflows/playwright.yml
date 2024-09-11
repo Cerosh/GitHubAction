@@ -5,20 +5,20 @@ on:
       environment:
         description: "Select the environment to execute test"
         required: true
-        default: "test"
+        default: "dev"
         type: "choice"
         options:
+          - dev
           - test
-          - sandbox
           - uat
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     env:
-      UAT_URL: ${{ vars.UAT_URL }}
-      SANDBOX_URL: ${{ vars.SANDBOX_URL}}
-      TEST_URL: ${{ vars.TEST_URL }}
+      UAT_URL: ${{ vars.DEV_URL }}
+      SANDBOX_URL: ${{ vars.TEST_URL}}
+      TEST_URL: ${{ vars.UAT_URL }}
     steps:
       - name: Set BASE_URL
         shell: bash
@@ -30,13 +30,9 @@ jobs:
           elif [ "${{ github.event.inputs.environment }}" == "sandbox" ]; then
             echo "BASE_URL=${SANDBOX_URL}" >> $GITHUB_ENV
           else
-            echo "Error: Unknown environment '${{ github.event.inputs.environment }}'. Please use 'test', 'sandbox', or 'uat'." >&2
+            echo "Error: Unknown environment '${{ github.event.inputs.environment }}'." >&2
             exit 1
           fi
-      - name: Display BASE_URL
-        shell: bash
-        run: |
-          echo "The execution was performed on $BASE_URL"
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
