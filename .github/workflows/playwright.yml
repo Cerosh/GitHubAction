@@ -16,19 +16,19 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     env:
-      UAT_URL: ${{ vars.DEV_URL }}
-      SANDBOX_URL: ${{ vars.TEST_URL}}
-      TEST_URL: ${{ vars.UAT_URL }}
+      DEV_URL: ${{ vars.DEV_URL }}
+      TEST_URL: ${{ vars.TEST_URL}}
+      UAT_URL: ${{ vars.UAT_URL }}
     steps:
       - name: Set BASE_URL
         shell: bash
         run: |
-          if [ "${{ github.event.inputs.environment }}" == "uat" ]; then
-            echo "BASE_URL=${UAT_URL}" >> $GITHUB_ENV
+          if [ "${{ github.event.inputs.environment }}" == "dev" ]; then
+            echo "BASE_URL=${DEV_URL}" >> $GITHUB_ENV
           elif [ "${{ github.event.inputs.environment }}" == "test" ]; then
             echo "BASE_URL=${TEST_URL}" >> $GITHUB_ENV
-          elif [ "${{ github.event.inputs.environment }}" == "sandbox" ]; then
-            echo "BASE_URL=${SANDBOX_URL}" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.environment }}" == "uat" ]; then
+            echo "BASE_URL=${UAT_URL}" >> $GITHUB_ENV
           else
             echo "Error: Unknown environment '${{ github.event.inputs.environment }}'." >&2
             exit 1
