@@ -27,4 +27,5 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-      - run: echo "First workflow dispatch completed"
+      - name: Displaying the free form input
+        run: echo "The test was executed in ${{ github.event.inputs.environment }}"
