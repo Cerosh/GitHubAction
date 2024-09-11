@@ -1,38 +1,26 @@
-name: Workflow dispatch URL based on choice example
+name: Workflow dispatch URL based on environment choice example
 on:
   workflow_dispatch:
     inputs:
       environment:
         description: "Select the environment to execute test"
         required: true
-        default: "dev"
+        default: "DEV"
         type: "choice"
         options:
-          - dev
-          - test
-          - uat
+          - DEV
+          - TEST
+          - UAT
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
     env:
-      DEV_URL: ${{ vars.DEV_URL }}
-      TEST_URL: ${{ vars.TEST_URL}}
-      UAT_URL: ${{ vars.UAT_URL }}
+      BASE_URL: ${{ vars.URL }}
     steps:
       - name: Set BASE_URL
-        shell: bash
-        run: |
-          if [ "${{ github.event.inputs.environment }}" == "dev" ]; then
-            echo "BASE_URL=${DEV_URL}" >> $GITHUB_ENV
-          elif [ "${{ github.event.inputs.environment }}" == "test" ]; then
-            echo "BASE_URL=${TEST_URL}" >> $GITHUB_ENV
-          elif [ "${{ github.event.inputs.environment }}" == "uat" ]; then
-            echo "BASE_URL=${UAT_URL}" >> $GITHUB_ENV
-          else
-            echo "Error: Unknown environment '${{ github.event.inputs.environment }}'." >&2
-            exit 1
-          fi
+        run: echo "$BASE_URL"
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
