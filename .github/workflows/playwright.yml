@@ -19,7 +19,7 @@ jobs:
       UAT_URL: ${{ vars.UAT_URL }}
     steps:
       - name: Set BASE_URL
-        run: echo "$UAT_URL""
+        run: echo "$UAT_URL"
       - name: Display BASE_URL
         shell: bash
         run: |
