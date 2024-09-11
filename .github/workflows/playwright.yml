@@ -32,10 +32,12 @@ jobs:
             exit 1
           fi
           echo "BASE_URL=$BASE_URL" >> $GITHUB_ENV
+          echo "TEST_URL=$test_url" >> $GITHUB_ENV
       - name: Display BASE_URL
         shell: bash
         run: |
           echo "The execution was performed on $test_url"
+           echo "The execution was performed on $TEST_URL"
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
