@@ -17,14 +17,26 @@ jobs:
     runs-on: ubuntu-latest
     env:
       UAT_URL: ${{ vars.UAT_URL }}
+      SANDBOX_URL: ${{ vars.SANDBOX_URL}}
+      TEST_URL: ${{ vars.TEST_URL }}
     steps:
       - name: Set BASE_URL
-        run: echo "$UAT_URL"
+        shell: bash
+        run: |
+          if [ "${{ github.event.inputs.environment }}" == "uat" ]; then
+            echo "BASE_URL=${UAT_URL}" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.environment }}" == "test" ]; then
+            echo "BASE_URL=${TEST_URL}" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.environment }}" == "sandbox" ]; then
+            echo "BASE_URL=${SANDBOX_URL}" >> $GITHUB_ENV
+          else
+            echo "Error: Unknown environment '${{ github.event.inputs.environment }}'. Please use 'test', 'sandbox', or 'uat'." >&2
+            exit 1
+          fi
       - name: Display BASE_URL
         shell: bash
         run: |
-          echo "The execution was performed on $test_url"
-           echo "The execution was performed on $TEST_URL"
+          echo "The execution was performed on $BASE_URL"
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
