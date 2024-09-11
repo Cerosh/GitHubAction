@@ -15,6 +15,8 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    env:
+      test_url: ${{ github.repository.variables.UAT_URL }}
     steps:
       - name: Set BASE_URL
         shell: bash
@@ -33,7 +35,7 @@ jobs:
       - name: Display BASE_URL
         shell: bash
         run: |
-          echo "The execution was performed on $BASE_URL"
+          echo "The execution was performed on $test_url"
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
